@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titulo %}Interclasse{% endblock %} - Gestão Interclasse</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <div class="layout">
+
+        <!-- MENU VERTICAL -->
+        <nav class="menu-lateral">
+            <div class="menu-titulo">🏆 Interclasse</div>
+            <ul>
+                <li>
+                    <a href="{{ url_for('dashboard') }}"
+                       class="{{ 'ativo' if request.endpoint == 'dashboard' else '' }}">
+                       <span class="icone">📊</span> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('listar_jogadores') }}"
+                       class="{{ 'ativo' if 'jogador' in request.endpoint else '' }}">
+                       <span class="icone">🧑‍🤝‍🧑</span> Jogadores
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('listar_times') }}"
+                       class="{{ 'ativo' if request.endpoint and 'time' in request.endpoint else '' }}">
+                       <span class="icone">🛡️</span> Times
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('listar_partidas') }}"
+                       class="{{ 'ativo' if 'partida' in request.endpoint else '' }}">
+                       <span class="icone">⚽</span> Partidas
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- CONTEÚDO -->
+        <main class="conteudo">
+            {% with mensagens = get_flashed_messages(with_categories=true) %}
+                {% if mensagens %}
+                    <div class="flash-container">
+                        {% for categoria, mensagem in mensagens %}
+                            <div class="flash flash-{{ categoria }}">{{ mensagem }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% block conteudo %}
+            {% endblock %}
+        </main>
+
+    </div>
+
+</body>
+</html>
