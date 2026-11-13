@@ -1,0 +1,32 @@
+<section class="painel">
+    <h2>Lista de clientes</h2>
+
+{% block conteudo %}
+    {% if clientes %}
+    <table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>nome</th>
+            <th> data</th>
+            <th> email</th>
+            <th>senha</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for cliente in clientes %}
+        <tr>
+            <th>{{ cliente.id}}</th>
+            <th>{{ cliente.nome}}</th>
+            <th>{{ cliente.data}}</th>
+            <th>{{ cliente.email}}</th>
+            <th>{{ cliente.senha}}</th>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="vazio">Nenhum cliente cadastrado ainda.</p>
+    {% endif %}
+</section>
+{% endblock %}

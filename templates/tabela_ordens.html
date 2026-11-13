@@ -1,0 +1,64 @@
+from logging import exception
+
+from flask import flash
+from sqlalchemy import select, func
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.sql.elements import or_
+
+from models import db_session, OrdemDeServicos, Clientes, Equipamentos
+
+
+def select_todos():
+    # 1- Monta o select trazendo a Ordem, o Cliente e o Equipamento juntos
+    ordem_sql = (
+        select(OrdemDeServicos, Clientes, Equipamentos)
+        ..join(Clientes, OrdemDeServicos.id_clientes == Clientes.id)
+        .join(Equipamentos, OrdemDeServicos.equipamento_id == Equipamentos.id)
+        .order_by(OrdemDeServicos.data_abertura.desc()) # Mais recentes primeiro
+    )
+    # 2- Executa o select
+    todas_ordens = db_session.execute(ordem_sql).all()
+    return todas_ordens
+
+
+def select_quantidade_total():
+    ordem_sql = select(func.count(OrdemDeServicos.id))
+    qtd_total = db_session.execute(ordem_sql).scalar()
+    return qtd_total
+
+
+def salvar(cliente_id, equipamento_id, descricao_problema, status, data_abertura):
+    try:
+        ordem_nova = OrdemDeServicos(
+            cliente_id=int(cliente_id),
+            equipamento_id=int(equipamento_id),
+            descricao_problema=descricao_problema,
+            status=status,
+            data_abertura=data_abertura
+        )
+        db_session.add(ordem_nova)
+        db_session.commit()
+        flash("Ordem de serviço aberta com sucesso", "success")
+    except SQLAlchemyError as e:
+        db_session.rollback()
+        print(e)
+        flash("Ocorreu um erro ao salvar no banco, tente novamente", "error")
+    except Exception as e:
+        db_session.rollback()
+        print(e)
+        flash("Ocorreu um erro inesperado, tente novamente", "error")
+
+
+def select_por_cliente_ou_equipamento(id_busca):
+    ordens_sql = (
+        select(OrdemDeServicos, Clientes, Equipamentos)
+        .join(Clientes, OrdemDeServicos.cliente_id == Clientes.id)
+        .join(Equipamentos, OrdemDeServicos.equipamento_id == Equipamentos.id)
+        .where(or_(OrdemDeServicos.cliente_id == id_busca, OrdemDeServicos.equipamento_id == id_busca))
+    )
+    ordens_filtradas = db_session.execute(ordens_sql).all()
+    return ordens_filtradas
+
+
+# Exemplo de teste: buscando ordens do cliente ou equipamento de ID 2
+

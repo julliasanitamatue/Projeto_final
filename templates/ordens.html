@@ -1,10 +1,83 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block titulo %}Ordens{% endblock %}
 
-</body>
-</html>
+{% block conteudo %}
+<div class="cabecalho-pagina">
+    <div>
+        <h1>Ordem de Serviço</h1>
+        <p class="subtitulo">Cadastro das ordens da Quarks</p>
+    </div>
+    {% if not editar %}
+    <a href="{{ url_for('nova_ordens') }}" class="botao">+ Nova ordem</a>
+    {% endif %}
+</div>
+
+{% if request.endpoint == 'nova_ordens' %}
+<section class="painel formulario">
+    <h2>Nova ordem</h2>
+    <form method="POST" action="{{ url_for('nova_ordens') }}">
+        <div class="linha-campos">
+            <div class="campo">
+                <label for="cliente_id">Cliente *</label>
+                <select id="cliente_id" name="cliente_id" required>
+                    <option value="">Selecione um cliente</option>
+                    {% for cliente in clientes %}
+                    <option value="{{ cliente.id }}">{{ cliente.nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="campo">
+                <label for="equipamento_id">Equipamento *</label>
+                <select id="equipamento_id" name="equipamento_id" required>
+                    <option value="">Selecione um equipamento</option>
+                    {% for eq in equipamentos %}
+                    <option value="{{ eq.id }}">{{ eq.nome_equipamentos }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="campo">
+            <label for="descricao">Descrição *</label>
+            <input type="text" id="descricao" name="descricao" placeholder="Ex: Manutenção preventiva" required>
+        </div>
+
+        <div class="acoes-form">
+            <button type="submit" class="botao">Cadastrar</button>
+            <a href="{{ url_for('listar_ordens') }}" class="botao botao-secundario">Cancelar</a>
+        </div>
+    </form>
+</section>
+{% endif %}
+
+<section class="painel">
+    <h2>Lista de Ordens de Serviço</h2>
+    {% if ordens %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Descrição</th>
+                <th>Nome do Cliente</th>
+                <th>Responsável</th>
+                <th>Criado em</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for ordem in ordens %}
+        <tr>
+            <td>{{ ordem.id }}</td>
+            <td>{{ ordem.descricao }}</td>
+            <td>{{ ordem.nome_cliente }}</td>
+            <td>{{ ordem.responsavel or 'Não atribuído' }}</td>
+            <td>{{ ordem.criado_em }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="vazio">Nenhuma ordem de serviço cadastrada ainda.</p>
+    {% endif %}
+</section>
+{% endblock %}

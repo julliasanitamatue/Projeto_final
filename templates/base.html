@@ -3,61 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block titulo %}Interclasse{% endblock %} - Gestão Interclasse</title>
+    <title>{% block titulo %}empresa Quarks{% endblock %} - empresa Quarks</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
-    <div class="layout">
+<div class="layout">
+{% if current_user.id %}
+    <!-- MENU VERTICAL -->
+    <nav class="menu-lateral">
+        <div class="menu-titulo"> Quarks soluções Industriais</div>
+        <ul>
+            <li>
+                <a href="{{ url_for('index') }}"
+                   class="{{ 'ativo' if request.endpoint == 'dashboard' else '' }}">
+                    <span class="icone"></span> inicio
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('listar_clientes') }}"
+                   class="{{ 'ativo' if 'clientes' in request.endpoint else '' }}">
+                    <span class="icone"></span> clientes
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('listar_equipamentos') }}"
+                   class="{{ 'ativo' if request.endpoint and 'equipamentos' in request.endpoint else '' }}">
+                    <span class="icone"></span> equipamentos
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('listar_ordens') }}"
+                   class="{{ 'ativo' if 'ordens' in request.endpoint else '' }}">
+                    <span class="icone"></span> ordens de serviço
+                </a>
+            </li>
 
-        <!-- MENU VERTICAL -->
-        <nav class="menu-lateral">
-            <div class="menu-titulo">🏆 Interclasse</div>
-            <ul>
-                <li>
-                    <a href="{{ url_for('dashboard') }}"
-                       class="{{ 'ativo' if request.endpoint == 'dashboard' else '' }}">
-                       <span class="icone">📊</span> Dashboard
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ url_for('listar_jogadores') }}"
-                       class="{{ 'ativo' if 'jogador' in request.endpoint else '' }}">
-                       <span class="icone">🧑‍🤝‍🧑</span> Jogadores
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ url_for('listar_times') }}"
-                       class="{{ 'ativo' if request.endpoint and 'time' in request.endpoint else '' }}">
-                       <span class="icone">🛡️</span> Times
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ url_for('listar_partidas') }}"
-                       class="{{ 'ativo' if 'partida' in request.endpoint else '' }}">
-                       <span class="icone">⚽</span> Partidas
-                    </a>
-                </li>
-            </ul>
-        </nav>
+            <li>
+                <a href="{{ url_for('nova_movimentacao') }}"
+                   class="{{ 'ativo' if 'movimentacao' in request.endpoint else '' }}">
+                    <span class="icone">🔄️</span> Movimentações
+                </a>
+            </li>
 
-        <!-- CONTEÚDO -->
-        <main class="conteudo">
-            {% with mensagens = get_flashed_messages(with_categories=true) %}
-                {% if mensagens %}
-                    <div class="flash-container">
-                        {% for categoria, mensagem in mensagens %}
-                            <div class="flash flash-{{ categoria }}">{{ mensagem }}</div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            {% endwith %}
+            <li>
+                <a href="{{ url_for('logout') }}">
+                    <span class="icone">🚪</span> Sair [{{ current_user.nome }}]
+                </a>
+            </li>
+        </ul>
+    </nav>
+{% endif %}
+    <!-- CONTEÚDO -->
+    <main class="conteudo">
+        {% with mensagens = get_flashed_messages(with_categories=true) %}
+        {% if mensagens %}
+        <div class="flash-container">
+            {% for categoria, mensagem in mensagens %}
+            <div class="flash flash-{{ categoria }}">{{ mensagem }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
 
-            {% block conteudo %}
-            {% endblock %}
-        </main>
+        {% block conteudo %}
+        {% endblock %}
+    </main>
 
-    </div>
+</div>
 
 </body>
 </html>

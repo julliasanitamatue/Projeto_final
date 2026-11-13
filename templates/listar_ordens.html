@@ -1,0 +1,32 @@
+section class="painel">
+    <h2>Lista de Times</h2>
+    {% if times %}
+    <table>
+        <theaed>
+            <tr>
+                <th>id</th>
+                <th>nome</th>
+                <th>turma</th>
+                <th>jogadores</th>
+                <th>responsavel</th>
+            </tr>
+        </theaed>
+
+        <tbody>
+        {% for time,jogadores in times %}
+        <tr>
+            <td>{{ time.id }}</td>
+            <td><a href="{{url_for('detalhes_time', id_time=time.id) }}">{{ time.nome }}</a></td>
+            <td>{{ time.turma }}</td>
+            <td>{{ jogadores }}</td>
+            <td>{{ time.responsavel }}</td>
+
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="vazio">Nenhum time cadastrado ainda.</p>
+    {% endif %}
+</section>
+{% endblock %}

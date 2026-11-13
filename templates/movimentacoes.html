@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block titulo %}Movimentações{% endblock %}
+
+{% block conteudo %}
+    <div class="cabecalho-pagina">
+        <div>
+            <h1>Movimentações</h1>
+            <p class="subtitulo">Histórico de transferências de jogadores entre times</p>
+        </div>
+        <a href="{{ url_for('nova_movimentacao') }}" class="botao">+ Nova Movimentação</a>
+    </div>
+
+    {% if request.endpoint == 'nova_movimentacao' %}
+    <section class="painel formulario">
+        <h2>Nova Movimentação</h2>
+
+        <form method="POST" action="{{ url_for('nova_movimentacao') }}">
+            <div class="linha-campos">
+                <div class="campo">
+                    <label for="cliente_id">Cliente *</label>
+                    <select id="cliente_id" name="cliente_id" required>
+                        <option value="">Selecione um jogador</option>
+                        {% for cliente, time in clientes %}
+                            <option value="{{ cliente.id }}"
+                                {% if cliente_selecionado_id and cliente_selecionado_id == cliente.id %}selected{% endif %}>
+                                {{ cliente.nome }} (Atual: {{ equipamentos.nome if time else 'Sem equipamentos' }}
+                                - {{cliente.posicao}})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label for="equipamentos_destino_id">Time Destino *</label>
+                    <select id="equipamentos_destino_id" name="equipamentos_destino_id" required>
+                        <option value="">Selecione o equipamneto de destino</option>
+                        {% for equipamentos, qtd in equipamentos %}
+                            <option value="{{ equipamentos.id }}">{{ equipamentos.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="acoes-form">
+                <button type="submit" class="botao">Transferir</button>
+                <a href="{{ url_for('nova_movimentacao') }}" class="botao botao-secundario">Cancelar</a>
+            </div>
+        </form>
+    </section>
+    {% endif %}
+
+    <section class="painel">
+        <h2>Histórico de Movimentações</h2>
+        {% if movimentacoes %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Cliente</th>
+                    <th>Equipamentos Origem</th>
+                    <th>Equipamentos Destino</th>
+                    <th>Data/Hora</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for movimentacao, clientes, equipamentos_origem, equipamentos_destino in movimentacoes %}
+                <tr>
+                    <td>{{ movimentacao.id }}</td>
+                    <td>{{ clientes.nome }}</td>
+                    <td>{{ equipamentos_origem.nome if equipamentos_origem else '-' }}</td>
+                    <td>{{ equipamentos_destino.nome if equipamentos_destino else '-' }}</td>
+                    <td>{{ movimentacao.data_movimentacao.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p class="vazio">Nenhuma movimentação registrada ainda.</p>
+        {% endif %}
+    </section>
+{% endblock %}

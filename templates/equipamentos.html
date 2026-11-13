@@ -1,10 +1,70 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block titulo %}Equipamento{% endblock %}
 
-</body>
-</html>
+{% block conteudo %}
+<div class="cabecalho-pagina">
+    <div>
+        <h1>Equipamentos</h1>
+        <p class="subtitulo">Cadastro dos Equipamentos</p>
+    </div>
+</div>
+
+{% if request.endpoint == 'novo_equipamento' %}
+<section class="painel formulario">
+    <h2>Novo equipamento</h2>
+
++
+    <form method="POST" action="{{ url_for('novo_equipamento') }}">
+
+        <div class="linha-campos">
+            <div class="campo">
+                <label for="nome_equipamentos">Nome *</label>
+                <input type="text" id="nome_equipamentos" name="nome_equipamentos">
+            </div>
+        </div>
+        <div class="linha-campos">
+            <div class="campo">
+                <label for="descricao">Descrição do equipamento </label>
+                <textarea name="descricao" id="descricao"></textarea>
+            </div>
+        </div>
+
+
+        <div class="acoes-form">
+            <button type="submit" class="botao">Cadastrar</button>
+            <a href="{{ url_for('listar_equipamentos') }}" class="botao botao-secundario">Cancelar</a>
+        </div>
+    </form>
+
+</section>
+<section class="painel">
+    <h2>Lista de equipamentos</h2>
+    {% if equipamentos %}
+    <table>
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>nome equipamento</th>
+            <th>descricao</th>
+            <th>criado em</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for equipamento in equipamentos %}
+        <tr>
+            <td>{{ equipamento.id}}</td>
+            <td>{{ equipamento.nome_equipamentos}}</td>
+            <td>{{ equipamento.descricao}}</td>
+            <td>{{ equipamento.equipamento_criado_em}}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="vazio">Nenhum equipamento cadastrado ainda.</p>
+    {% endif %}
+</section>
+{% endif %}
+{% endblock conteudo %}
+
+

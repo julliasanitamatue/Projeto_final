@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+<a href="{{ url_for('novo_equipamento') }}" class="botao">+ Novo Equipamento</a>
+<section class="painel">
+    <h2>Lista de equipamentos</h2>
+    {% if equipamentos %}
+    <table>
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>nome equipamento</th>
+            <th>descricao</th>
+            <th>criado em</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for equipamento in equipamentos %}
+        <tr>
+            <td>{{ equipamento.id}}</td>
+            <td>{{ equipamento.nome_equipamentos}}</td>
+            <td>{{ equipamento.descricao}}</td>
+            <td>{{ equipamento.equipamento_criado_em}}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="vazio">Nenhum equipamento cadastrado ainda.</p>
+    {% endif %}
+</section>
+{% endblock %}
