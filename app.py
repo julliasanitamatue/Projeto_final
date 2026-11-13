@@ -234,5 +234,9 @@ def nova_ordens():
     return render_template("ordens.html", ordens=ordens, cliente=clientes)
 
 
+@app.route("recursos/novo", methods=["GET", "POST"])
+def novo_recursos
+
+
 if __name__ == "__main__":
     app.run(debug=True,host="0.0.0.0",port=5001)
